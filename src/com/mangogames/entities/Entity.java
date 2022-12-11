@@ -1,10 +1,12 @@
 package com.mangogames.entities;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.mangogames.main.Game;
 import com.mangogames.world.Camera;
+import com.mangogames.world.World;
 
 public class Entity {
 	
@@ -63,5 +65,12 @@ public class Entity {
 	
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
+	}
+	
+	public static boolean isColliding(Entity e1, Entity e2) {
+		Rectangle ent1 = new Rectangle(e1.getX(), e1.getY(), World.TILE_SIZE, World.TILE_SIZE);
+		Rectangle ent2 = new Rectangle(e2.getX(), e2.getY(), World.TILE_SIZE, World.TILE_SIZE);
+		
+		return ent1.intersects(ent2);
 	}
 }

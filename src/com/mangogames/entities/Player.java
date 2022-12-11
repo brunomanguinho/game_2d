@@ -77,11 +77,13 @@ public class Player extends Entity{
 		if (this.hitted) {
 			long now = System.currentTimeMillis();
 			
-			if (now - timeHitted >= 100) {
+			if (now - timeHitted >= 500) {
 				timeHitted = 0;
 				setHitted(false);
 			}
 		}
+		
+		this.checkCollisionLifePack();
 		
 		double camX = this.getX() - (Game.WIDTH/2);
 		double camY = this.getY() - (Game.HEIGHT/2);
@@ -93,8 +95,22 @@ public class Player extends Entity{
 		Camera.y = (int) camY;
 	}
 	
+	public void checkCollisionLifePack() {
+		for (int i = 0; i < Game.entities.size(); i++) {
+			Entity en = Game.entities.get(i);
+			
+			if (en instanceof LifePack) {
+				if (Entity.isColliding(this, en)) {
+					if (life < maxLife) {
+						Game.entities.remove(i);
+						if (life + 10 > maxLife) life = maxLife; else life += 10;
+					}
+				}
+			}
+		}
+	}
+	
 	public void render(Graphics g) {
-
 		if (curDirection == rightDirection) {
 			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		} else if (curDirection == leftDirection) {
