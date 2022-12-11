@@ -11,6 +11,9 @@ public class Player extends Entity{
 	
 	public boolean right, up, left, down;
 	public double speed = 1.4;
+	public int life = 100;
+	private boolean hitted = false;
+	private long timeHitted;
 	
 	private int rightDirection = 0, leftDirection = 1;
 	
@@ -71,6 +74,14 @@ public class Player extends Entity{
 			}
 		}
 		
+		if (this.hitted) {
+			long now = System.currentTimeMillis();
+			
+			if (now - timeHitted >= 3000) {
+				timeHitted = 0;
+				setHitted(false);
+			}
+		}
 		
 		double camX = this.getX() - (Game.WIDTH/2);
 		double camY = this.getY() - (Game.HEIGHT/2);
@@ -83,10 +94,23 @@ public class Player extends Entity{
 	}
 	
 	public void render(Graphics g) {
+
 		if (curDirection == rightDirection) {
 			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		} else if (curDirection == leftDirection) {
 			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		} 
+	}
+	
+	public void setHitted(boolean hit) {
+		this.hitted = hit;
+		
+		if (this.hitted) {
+			timeHitted = System.currentTimeMillis();
+		}
+	}
+	
+	public boolean getHitted() {
+		return this.hitted;
 	}
 }

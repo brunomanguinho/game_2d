@@ -25,26 +25,35 @@ public class Villain extends Entity{
 	}
 	
 	public void tick() {
-		if ( ( (int) x < Game.player.getX() ) && 
-			 ( World.isFree((int)(x + speed), this.getY()) ) &&
-			 ( !isColliding((int)(x + speed), this.getY()) ) 
-		   )
-			x+=speed;
-		else if ( ( (int) x > Game.player.getX() ) && 
-				  ( World.isFree((int)(x - speed), this.getY()) ) &&
-				  ( !isColliding((int)(x - speed), this.getY()) )
-				)
-			x-=speed;
-		
-		if ( ( (int) y < Game.player.getY() ) && 
-			 ( World.isFree(this.getX(), (int)(y + speed)) ) &&
-			 ( !isColliding(this.getX(), (int)(y + speed)) )
-					 )
-			y+=speed;
-		else if ( ( (int) x > Game.player.getY() ) && 
-				  ( World.isFree(this.getX(), (int)(y - speed)) ) &&
-				  ( !isColliding(this.getX(), (int)(y - speed)) ))
-			y-=speed;
+		if (!hitPlayer()) {
+			if ( ( (int) x < Game.player.getX() ) && 
+				 ( World.isFree((int)(x + speed), this.getY()) ) &&
+				 ( !isColliding((int)(x + speed), this.getY()) ) 
+			   )
+				x+=speed;
+			else if ( ( (int) x > Game.player.getX() ) && 
+					  ( World.isFree((int)(x - speed), this.getY()) ) &&
+					  ( !isColliding((int)(x - speed), this.getY()) )
+					)
+				x-=speed;
+			
+			if ( ( (int) y < Game.player.getY() ) && 
+				 ( World.isFree(this.getX(), (int)(y + speed)) ) &&
+				 ( !isColliding(this.getX(), (int)(y + speed)) )
+						 )
+				y+=speed;
+			else if ( ( (int) x > Game.player.getY() ) && 
+					  ( World.isFree(this.getX(), (int)(y - speed)) ) &&
+					  ( !isColliding(this.getX(), (int)(y - speed)) ))
+				y-=speed;
+		} else if (!Game.player.getHitted()){
+			Game.player.life--;
+			Game.player.setHitted(true);
+			
+			if (Game.player.life == 0) {
+				System.exit(1);
+			}
+		}
 		
 		frames++;
 		
@@ -72,6 +81,13 @@ public class Villain extends Entity{
 			}
 		}
 		return false;
+	}
+	
+	public boolean hitPlayer() {
+		Rectangle curVillain = new Rectangle(this.getX(), this.getY(), World.TILE_SIZE, World.TILE_SIZE);
+		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), World.TILE_SIZE, World.TILE_SIZE);
+	
+		return curVillain.intersects(player);
 	}
 	
 	@Override
