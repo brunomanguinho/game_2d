@@ -14,6 +14,8 @@ public class Entity {
 	public static BufferedImage WEAPON_EN = Game.spritesheet.getSprite(80, 16, 16, 16);
 	public static BufferedImage AMMO_EN = Game.spritesheet.getSprite(96, 0, 16, 16);
 	public static BufferedImage VILLAIN_EN = Game.spritesheet.getSprite(96, 16, 16, 16);
+	public static BufferedImage RIGHT_WEAPON = Game.spritesheet.getSprite(80, 32, 16, 16);
+	public static BufferedImage LEFT_WEAPON = Game.spritesheet.getSprite(80, 48, 16, 16);
 	
 	protected double x, y;
 	protected int width, height;

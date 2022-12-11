@@ -16,6 +16,8 @@ public class Player extends Entity{
 	public boolean hitted = false;
 	private long timeHitted;
 	
+	public boolean armed = false;
+	
 	private int rightDirection = 0, leftDirection = 1;
 	
 	private int curDirection = rightDirection;
@@ -89,6 +91,7 @@ public class Player extends Entity{
 		
 		checkCollisionLifePack();
 		checkCollisionAmmo();
+		checkCollisionWeapon();
 		
 		double camX = this.getX() - (Game.WIDTH/2);
 		double camY = this.getY() - (Game.HEIGHT/2);
@@ -128,12 +131,33 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void checkCollisionWeapon() {
+		for (int i = 0; i < Game.entities.size(); i++) {
+			Entity en = Game.entities.get(i);
+			
+			if (en instanceof Weapon) {
+				if (Entity.isColliding(this, en)) {
+					if (life < maxLife) {
+						Game.entities.remove(i);
+						armed = true;
+					}
+				}
+			}
+		}
+	}
+	
 	public void render(Graphics g) {
 		if (!this.hitted) {
 			if (curDirection == rightDirection) {
 				g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				if (armed) {
+					g.drawImage(RIGHT_WEAPON, this.getX() + 8 - Camera.x, this.getY() - Camera.y, null);
+				}
 			} else if (curDirection == leftDirection) {
 				g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				if (armed) {
+					g.drawImage(LEFT_WEAPON, this.getX() - 8 - Camera.x, this.getY() - Camera.y, null);
+				}
 			} 
 		} else {
 			g.drawImage(playerDamaged, this.getX() - Camera.x, this.getY() - Camera.y, null);
