@@ -19,5 +19,10 @@ public class UI {
 		g.setFont(new Font("arial", Font.BOLD, 8));
 		g.drawString((int)Game.player.life + "/" + (int)Game.player.maxLife, 25, 11);
 		
+		if ( Game.player.ammo > 0 ) {
+			g.setColor(Color.WHITE);
+			g.setFont(new Font("arial", Font.BOLD, 8));
+			g.drawString("AMMO: " + (int)Game.player.ammo, 10, 19);
+		}
 	}
 }

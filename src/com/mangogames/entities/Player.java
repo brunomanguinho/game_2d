@@ -12,6 +12,7 @@ public class Player extends Entity{
 	public boolean right, up, left, down;
 	public double speed = 1.4;
 	public double life = 100, maxLife = 100;
+	public int ammo = 0;
 	private boolean hitted = false;
 	private long timeHitted;
 	
@@ -83,7 +84,8 @@ public class Player extends Entity{
 			}
 		}
 		
-		this.checkCollisionLifePack();
+		checkCollisionLifePack();
+		checkCollisionAmmo();
 		
 		double camX = this.getX() - (Game.WIDTH/2);
 		double camY = this.getY() - (Game.HEIGHT/2);
@@ -93,6 +95,19 @@ public class Player extends Entity{
 		
 		Camera.x = (int) camX;
 		Camera.y = (int) camY;
+	}
+	
+	public void checkCollisionAmmo() {
+		for (int i = 0; i < Game.entities.size(); i++) {
+			Entity en = Game.entities.get(i);
+			
+			if (en instanceof Ammo) {
+				if (Entity.isColliding(this, en)) {
+					Game.entities.remove(i);
+					ammo += 20;
+				}
+			}
+		}
 	}
 	
 	public void checkCollisionLifePack() {
