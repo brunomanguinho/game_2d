@@ -47,12 +47,7 @@ public class Villain extends Entity{
 					  ( !isColliding(this.getX(), (int)(y - speed)) ))
 				y-=speed;
 		} else if (!Game.player.getHitted()){
-			Game.player.life--;
 			Game.player.setHitted(true);
-			
-			if (Game.player.life == 0) {
-				System.exit(1);
-			}
 		}
 		
 		frames++;

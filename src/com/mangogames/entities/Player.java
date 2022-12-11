@@ -13,7 +13,7 @@ public class Player extends Entity{
 	public double speed = 1.4;
 	public double life = 100, maxLife = 100;
 	public int ammo = 0;
-	private boolean hitted = false;
+	public boolean hitted = false;
 	private long timeHitted;
 	
 	private int rightDirection = 0, leftDirection = 1;
@@ -24,10 +24,13 @@ public class Player extends Entity{
 	private boolean moved = false;
 	
 	private BufferedImage[] rightPlayer, leftPlayer;
+	
+	private BufferedImage playerDamaged;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		
+		playerDamaged = Game.spritesheet.getSprite(0, 32, width, height);
 		rightPlayer = new BufferedImage[4];
 		leftPlayer = new BufferedImage[4];
 		
@@ -78,7 +81,7 @@ public class Player extends Entity{
 		if (this.hitted) {
 			long now = System.currentTimeMillis();
 			
-			if (now - timeHitted >= 500) {
+			if (now - timeHitted >= 100) {
 				timeHitted = 0;
 				setHitted(false);
 			}
@@ -126,18 +129,27 @@ public class Player extends Entity{
 	}
 	
 	public void render(Graphics g) {
-		if (curDirection == rightDirection) {
-			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		} else if (curDirection == leftDirection) {
-			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		} 
+		if (!this.hitted) {
+			if (curDirection == rightDirection) {
+				g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			} else if (curDirection == leftDirection) {
+				g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			} 
+		} else {
+			g.drawImage(playerDamaged, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		}
+			
 	}
 	
 	public void setHitted(boolean hit) {
 		this.hitted = hit;
-		
 		if (this.hitted) {
+			this.life--;
 			timeHitted = System.currentTimeMillis();
+		}
+		
+		if (this.life <= 0) {
+			Game.loadGraphicElements();
 		}
 	}
 	

@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static SpriteSheet spritesheet; 
 	public static Player player;
 	
-	public UI ui;
+	public static UI ui;
 	
 	public Game() {
 		addKeyListener(this);
@@ -53,7 +53,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB); // set the background image
 	}
 	
-	public void loadGraphicElements() {
+	public static void loadGraphicElements() {
 		spritesheet = new SpriteSheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(0, 0, 16, 16));
 		entities = new ArrayList<Entity>();
@@ -61,10 +61,6 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		entities.add(player);
 		world = new World("/map.png");
 		ui = new UI();
-		
-//		Villain villain = new Villain(32, 32, 16, 16, spritesheet.getSprite(96, 16, 16, 16));
-		
-//		entities.add(villain);
 	}
 	
 	public static void main(String args[]) {
