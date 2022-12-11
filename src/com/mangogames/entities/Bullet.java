@@ -9,10 +9,10 @@ import com.mangogames.world.Camera;
 
 public class Bullet extends Entity {
 
-	private int dx, dy;
+	private double dx, dy;
 	private double speed = 4;
 	
-	public Bullet(int x, int y, int width, int height, BufferedImage sprite, int dx, int dy) {
+	public Bullet(int x, int y, int width, int height, BufferedImage sprite, double dx, double dy) {
 		super(x, y, width, height, sprite);
 		
 		this.dx = dx;
@@ -23,7 +23,7 @@ public class Bullet extends Entity {
 		x += dx*speed;
 		y += dy*speed;
 		
-		if (x < 10 || y < 0 || x > Game.WIDTH || y > Game.HEIGHT) {
+		if (x < 10 || y < 0 || x > Game.WIDTH * Game.SCALE || y > Game.HEIGHT * Game.SCALE) {
 			Game.bullets.remove(this);
 			return;
 		}

@@ -4,9 +4,10 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.List;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -19,17 +20,18 @@ import com.mangogames.entities.Player;
 import com.mangogames.entities.Villain;
 import com.mangogames.graphics.SpriteSheet;
 import com.mangogames.graphics.UI;
+import com.mangogames.world.Camera;
 import com.mangogames.world.World;
 
 
-public class Game extends Canvas implements Runnable, KeyListener{
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener{
 	private static final long serialVersionUID = 1L;
 	
 	//Frame properties
 	public static JFrame frame;
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
-	private final int SCALE = 3;
+	public static final int SCALE = 3;
 	private BufferedImage image; //background image
 	
 	//Game properties
@@ -50,6 +52,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public Game() {
 		addKeyListener(this);
+		addMouseListener(this);
 		initFrame();
 		loadGraphicElements();
 		
@@ -233,6 +236,38 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
 			player.down = false;
 		}
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		player.mouseShooting = true;
+		player.mouseX = ( e.getX() / SCALE );
+		player.mouseY = ( e.getY() / SCALE );
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

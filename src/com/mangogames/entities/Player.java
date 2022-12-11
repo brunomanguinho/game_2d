@@ -15,9 +15,10 @@ public class Player extends Entity{
 	public int ammo = 0;
 	public boolean hitted = false;
 	private long timeHitted;
+	public int mouseX, mouseY;
 	
 	public boolean armed = false;
-	public boolean shooting = false;
+	public boolean shooting = false, mouseShooting = false;
 	
 	private int rightDirection = 0, leftDirection = 1;
 	
@@ -94,10 +95,14 @@ public class Player extends Entity{
 		checkCollisionAmmo();
 		checkCollisionWeapon();
 		
-		if (shooting) {
-			shooting = false;
-			if (armed && ammo > 0)
+		if (shooting || mouseShooting) {
+			if (armed && ammo > 0 && shooting) {
+				shooting = false;
 				createShoot();
+			} else if (armed && ammo > 0 && mouseShooting) {
+				mouseShooting = false;
+				createMouseShoot();
+			}
 		}
 		
 		double camX = this.getX() - (Game.WIDTH/2);
@@ -108,6 +113,26 @@ public class Player extends Entity{
 		
 		Camera.x = (int) camX;
 		Camera.y = (int) camY;
+	}
+	
+	private void createMouseShoot() {
+		ammo--;
+		
+		double angle = Math.atan2(mouseY - (this.getY()+8 - Camera.y), mouseX - (this.getX()+8 - Camera.x));
+		
+		double dx = Math.cos(angle);
+		double dy = Math.sin(angle);
+		int px = 0;
+		int py = 0;
+		
+		if (curDirection == rightDirection) {
+			px = 18;
+		}else {
+			px = -8;
+		}
+		
+		Bullet bullet = new Bullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, dy);
+		Game.bullets.add(bullet);
 	}
 	
 	private void createShoot() {
