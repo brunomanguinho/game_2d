@@ -38,10 +38,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	//Game elements
 	public static World world;
 	
-	public static List<Entity> entities;
+	public static ArrayList<Entity> entities;
+	public static ArrayList<Villain> villains;
 	public static SpriteSheet spritesheet; 
-	public static Player player; 
-	
+	public static Player player;
 	
 	public Game() {
 		addKeyListener(this);
@@ -55,6 +55,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		spritesheet = new SpriteSheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(0, 0, 16, 16));
 		entities = new ArrayList<Entity>();
+		villains = new ArrayList<Villain>();
 		entities.add(player);
 		world = new World("/map.png");
 		

@@ -51,6 +51,7 @@ public class World {
 					case 0xFFFF0000:
 						Villain villain = new Villain(x * 16, y * 16, 16, 16, Entity.VILLAIN_EN);
 						Game.entities.add(villain);
+						Game.villains.add(villain);
 						break;
 					case 0xFFFF6363:
 						//life
