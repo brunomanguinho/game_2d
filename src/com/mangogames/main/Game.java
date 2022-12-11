@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.List;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import com.mangogames.entities.Bullet;
 import com.mangogames.entities.Entity;
 import com.mangogames.entities.Player;
 import com.mangogames.entities.Villain;
@@ -40,6 +42,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public static ArrayList<Entity> entities;
 	public static ArrayList<Villain> villains;
+	public static ArrayList<Bullet> bullets;
 	public static SpriteSheet spritesheet; 
 	public static Player player;
 	
@@ -58,6 +61,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(0, 0, 16, 16));
 		entities = new ArrayList<Entity>();
 		villains = new ArrayList<Villain>();
+		bullets = new ArrayList<Bullet>();
 		entities.add(player);
 		world = new World("/map.png");
 		ui = new UI();
@@ -91,6 +95,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			Entity e = entities.get(i);
 			e.tick();
 		}
+		
+		for (int j = 0; j < bullets.size(); j++) {
+			bullets.get(j).tick();
+		}
 	}
 
 	// method to render the game
@@ -111,6 +119,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			e.render(g);
+		}
+		
+		for (int j = 0; j < bullets.size(); j++) {
+			bullets.get(j).render(g);;
 		}
 		
 		ui.render(g);
@@ -201,6 +213,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			player.left = false;
 			player.up = false;
 			player.down = true;
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_Z) {
+			player.shooting = true;
 		}
 	}
 

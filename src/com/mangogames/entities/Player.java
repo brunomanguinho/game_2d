@@ -17,6 +17,7 @@ public class Player extends Entity{
 	private long timeHitted;
 	
 	public boolean armed = false;
+	public boolean shooting = false;
 	
 	private int rightDirection = 0, leftDirection = 1;
 	
@@ -93,6 +94,12 @@ public class Player extends Entity{
 		checkCollisionAmmo();
 		checkCollisionWeapon();
 		
+		if (shooting) {
+			shooting = false;
+			if (armed && ammo > 0)
+				createShoot();
+		}
+		
 		double camX = this.getX() - (Game.WIDTH/2);
 		double camY = this.getY() - (Game.HEIGHT/2);
 		
@@ -101,6 +108,24 @@ public class Player extends Entity{
 		
 		Camera.x = (int) camX;
 		Camera.y = (int) camY;
+	}
+	
+	private void createShoot() {
+		ammo--;
+		
+		int dx;
+		int px = 0;
+		int py = 6;
+		if (curDirection == rightDirection) {
+			dx = 1;
+			px = 18;
+		}else {
+			dx = -1;
+			px = -8;
+		}
+		
+		Bullet bullet = new Bullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
+		Game.bullets.add(bullet);
 	}
 	
 	public void checkCollisionAmmo() {
@@ -140,6 +165,7 @@ public class Player extends Entity{
 					if (life < maxLife) {
 						Game.entities.remove(i);
 						armed = true;
+						ammo += 30;
 					}
 				}
 			}
