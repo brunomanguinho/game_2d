@@ -1,17 +1,27 @@
 package com.mangogames.entities;
 
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.mangogames.main.Game;
+import com.mangogames.world.Camera;
 import com.mangogames.world.World;
 
 public class Villain extends Entity{
 
 	private double speed = 0.6;
 	
+	private BufferedImage[] villains = new BufferedImage[3];
+	
+	private int frames = 0, maxFrames = 10, index = 0;
+	
 	public Villain(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
+		
+		villains[0] = Game.spritesheet.getSprite(96, 16, 16, 16);
+		villains[1] = Game.spritesheet.getSprite(112, 16, 16, 16);
+		villains[2] = Game.spritesheet.getSprite(128, 16, 16, 16);
 	}
 	
 	public void tick() {
@@ -35,6 +45,16 @@ public class Villain extends Entity{
 				  ( World.isFree(this.getX(), (int)(y - speed)) ) &&
 				  ( !isColliding(this.getX(), (int)(y - speed)) ))
 			y-=speed;
+		
+		frames++;
+		
+		if (frames == maxFrames) {
+			frames = 0;
+			index ++;
+			
+			if (index > this.villains.length - 1) 
+				index = 0;
+		}
 	}
 	
 	private boolean isColliding(int nextX, int nextY) {
@@ -54,4 +74,8 @@ public class Villain extends Entity{
 		return false;
 	}
 	
+	@Override
+	public void render(Graphics g) {
+		g.drawImage(villains[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+	}
 }
