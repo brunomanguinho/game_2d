@@ -123,7 +123,7 @@ public class Player extends Entity{
 		double dx = Math.cos(angle);
 		double dy = Math.sin(angle);
 		int px = 0;
-		int py = 0;
+		int py = 8;
 		
 		if (curDirection == rightDirection) {
 			px = 18;
