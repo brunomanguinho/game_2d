@@ -9,7 +9,6 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -17,6 +16,7 @@ import com.mangogames.entities.Entity;
 import com.mangogames.entities.Player;
 import com.mangogames.entities.Villain;
 import com.mangogames.graphics.SpriteSheet;
+import com.mangogames.graphics.UI;
 import com.mangogames.world.World;
 
 
@@ -43,6 +43,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static SpriteSheet spritesheet; 
 	public static Player player;
 	
+	public UI ui;
+	
 	public Game() {
 		addKeyListener(this);
 		initFrame();
@@ -58,6 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		villains = new ArrayList<Villain>();
 		entities.add(player);
 		world = new World("/map.png");
+		ui = new UI();
 		
 //		Villain villain = new Villain(32, 32, 16, 16, spritesheet.getSprite(96, 16, 16, 16));
 		
@@ -113,6 +116,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			Entity e = entities.get(i);
 			e.render(g);
 		}
+		
+		ui.render(g);
 		
 		
 		g.dispose();

@@ -11,7 +11,7 @@ public class Player extends Entity{
 	
 	public boolean right, up, left, down;
 	public double speed = 1.4;
-	public int life = 100;
+	public double life = 100, maxLife = 100;
 	private boolean hitted = false;
 	private long timeHitted;
 	
@@ -77,7 +77,7 @@ public class Player extends Entity{
 		if (this.hitted) {
 			long now = System.currentTimeMillis();
 			
-			if (now - timeHitted >= 3000) {
+			if (now - timeHitted >= 100) {
 				timeHitted = 0;
 				setHitted(false);
 			}
