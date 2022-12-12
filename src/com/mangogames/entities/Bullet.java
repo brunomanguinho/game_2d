@@ -27,7 +27,21 @@ public class Bullet extends Entity {
 			Game.bullets.remove(this);
 			return;
 		}
+		
+		checkCollisionEnemy();
 			
+	}
+	
+	private void checkCollisionEnemy() {
+		for (int i = 0; i < Game.entities.size(); i++) {
+			if (Game.entities.get(i) instanceof Villain) {
+				if (isColliding(this, Game.entities.get(i), true)) {
+					System.out.println("hitted?");
+					((Villain)Game.entities.get(i)).setHitted();
+					Game.bullets.remove(this);
+				}
+			}
+		}
 	}
 	
 	public void render(Graphics g) {

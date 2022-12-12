@@ -75,4 +75,15 @@ public class Entity {
 		
 		return ent1.intersects(ent2);
 	}
+	
+	public static boolean isColliding(Entity e1, Entity e2, boolean ownerProps) {
+		if (!ownerProps) {
+			return isColliding(e1, e2);
+		}else {
+			Rectangle ent1 = new Rectangle(e1.getX(), e1.getY(), e1.width, e1.height);
+			Rectangle ent2 = new Rectangle(e2.getX(), e2.getY(), e2.width, e2.height);
+			
+			return ent1.intersects(ent2);
+		}
+	}
 }

@@ -16,6 +16,8 @@ public class Villain extends Entity{
 	
 	private int frames = 0, maxFrames = 10, index = 0;
 	
+	private int life = 1;
+	
 	public Villain(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		
@@ -83,6 +85,15 @@ public class Villain extends Entity{
 		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), World.TILE_SIZE, World.TILE_SIZE);
 	
 		return curVillain.intersects(player);
+	}
+	
+	public void setHitted() {
+		this.life--;
+		
+		if (this.life == 0) {
+			Game.entities.remove(this);
+			Game.villains.remove(this);
+		}
 	}
 	
 	@Override
