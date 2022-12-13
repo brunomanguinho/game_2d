@@ -16,7 +16,10 @@ public class Villain extends Entity{
 	
 	private int frames = 0, maxFrames = 10, index = 0;
 	
-	private int life = 1;
+	private int life = 5;
+	
+	private boolean hitted = false;
+	private int damageFrames = 10, damageCurrent = 0;
 	
 	public Villain(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -61,6 +64,16 @@ public class Villain extends Entity{
 			if (index > this.villains.length - 1) 
 				index = 0;
 		}
+		
+		if (hitted) {
+			damageCurrent++;
+			
+			if (damageCurrent == damageFrames) {
+				damageCurrent = 0;
+				hitted = false;
+			}
+		}
+		
 	}
 	
 	private boolean isColliding(int nextX, int nextY) {
@@ -89,15 +102,24 @@ public class Villain extends Entity{
 	
 	public void setHitted() {
 		this.life--;
+		this.hitted = true;
 		
 		if (this.life == 0) {
 			Game.entities.remove(this);
 			Game.villains.remove(this);
+			
+			if (Game.villains.size() == 0) {
+				Game.loadGraphicElements();
+			}
 		}
 	}
 	
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(villains[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		if (!hitted) {
+			g.drawImage(villains[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		} else {
+			g.drawImage(Entity.VILLAIN_DAMAGE, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		}
 	}
 }
