@@ -3,7 +3,9 @@ package com.mangogames.main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -20,7 +22,6 @@ import com.mangogames.entities.Player;
 import com.mangogames.entities.Villain;
 import com.mangogames.graphics.SpriteSheet;
 import com.mangogames.graphics.UI;
-import com.mangogames.world.Camera;
 import com.mangogames.world.World;
 
 
@@ -38,6 +39,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private final String gameName = "Zelda Clone";
 	private Thread thread;
 	private boolean isRunning = false;
+	
+	enum GameState{
+		RUNNING,
+		GAME_OVER
+	}
+	
+	public static GameState state = GameState.RUNNING;
 	
 	//Game elements
 	public static World world;
@@ -73,6 +81,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		ui = new UI();
 	}
 	
+	public static void setGameOver() {
+		state = GameState.GAME_OVER;
+	}
+	
 	public static void main(String args[]) {
 		Game game = new Game();
 
@@ -97,17 +109,19 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	//method to update the game logic
 	public void tick() {
-		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			e.tick();
-		}
-		
-		for (int j = 0; j < bullets.size(); j++) {
-			bullets.get(j).tick();
-		}
-		
-		if (villains.size() == 0) {
-			setNextLevel();
+		if (state == GameState.RUNNING) {
+			for (int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
+				e.tick();
+			}
+			
+			for (int j = 0; j < bullets.size(); j++) {
+				bullets.get(j).tick();
+			}
+			
+			if (villains.size() == 0) {
+				setNextLevel();
+			}
 		}
 	}
 	
@@ -155,6 +169,17 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		
+		if (state == GameState.GAME_OVER) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(new Color(0, 0, 0, 100));
+			g2.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+			g.setFont(new Font("arial", Font.BOLD, 36));
+			g.setColor(Color.white);
+			g.drawString("GAME OVER", (WIDTH * SCALE)/2 -70, (HEIGHT * SCALE)/2 - 20);
+			g.drawString(">Press any key to restart<", (WIDTH * SCALE)/2 -160, (HEIGHT * SCALE)/2 + 40);
+		}
+		
 		bs.show();
 	}
 	
@@ -241,6 +266,12 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		if (e.getKeyCode() == KeyEvent.VK_Z) {
 			player.shooting = true;
+		}
+		
+		if ( (e.getKeyCode() == KeyEvent.VK_ENTER) && (state == GameState.GAME_OVER) ) {
+			level = 1;
+			loadGraphicElements();
+			state = GameState.RUNNING;
 		}
 	}
 

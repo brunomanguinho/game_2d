@@ -11,7 +11,7 @@ public class Player extends Entity{
 	
 	public boolean right, up, left, down;
 	public double speed = 1.4;
-	public double life = 100, maxLife = 100;
+	public double life = 10, maxLife = 100;
 	public int ammo = 0;
 	public boolean hitted = false;
 	public int mouseX, mouseY;
@@ -226,7 +226,7 @@ public class Player extends Entity{
 		}
 		
 		if (this.life <= 0) {
-			Game.loadGraphicElements();
+			Game.setGameOver();
 		}
 	}
 	
