@@ -42,6 +42,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	enum GameState{
 		RUNNING,
+		PAUSED,
 		GAME_OVER
 	}
 	
@@ -60,6 +61,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	private final int maxLevels = 2;
 	public static int level = 1;
+	
+	private final int maxFramesRestart = 30;
+	private int framesRestart = 0;
+	private boolean printRestart = true;
 	
 	public Game() {
 		addKeyListener(this);
@@ -122,6 +127,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			if (villains.size() == 0) {
 				setNextLevel();
 			}
+		} else if (state == GameState.GAME_OVER) {
+			framesRestart++;
+			
+			if (framesRestart == maxFramesRestart) {
+				printRestart = !printRestart;
+				framesRestart = 0;
+			}
 		}
 	}
 	
@@ -177,7 +189,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			g.setFont(new Font("arial", Font.BOLD, 36));
 			g.setColor(Color.white);
 			g.drawString("GAME OVER", (WIDTH * SCALE)/2 -70, (HEIGHT * SCALE)/2 - 20);
-			g.drawString(">Press any key to restart<", (WIDTH * SCALE)/2 -160, (HEIGHT * SCALE)/2 + 40);
+			
+			if (printRestart)
+				g.drawString(">Press any key to restart<", (WIDTH * SCALE)/2 -160, (HEIGHT * SCALE)/2 + 40);
 		}
 		
 		bs.show();
