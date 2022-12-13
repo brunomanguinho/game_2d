@@ -107,10 +107,6 @@ public class Villain extends Entity{
 		if (this.life == 0) {
 			Game.entities.remove(this);
 			Game.villains.remove(this);
-			
-			if (Game.villains.size() == 0) {
-				Game.loadGraphicElements();
-			}
 		}
 	}
 	
