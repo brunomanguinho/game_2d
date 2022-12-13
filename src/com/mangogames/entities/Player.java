@@ -14,18 +14,20 @@ public class Player extends Entity{
 	public double life = 100, maxLife = 100;
 	public int ammo = 0;
 	public boolean hitted = false;
-	private long timeHitted;
 	public int mouseX, mouseY;
 	
 	public boolean armed = false;
+	private boolean moved = false;
 	public boolean shooting = false, mouseShooting = false;
 	
 	private int rightDirection = 0, leftDirection = 1;
-	
 	private int curDirection = rightDirection;
-	
+
+	//move frames
 	private int frames = 0, maxFrames = 5, index = 0, maxIndex = 3;
-	private boolean moved = false;
+
+	//hit frames
+	private int damageFrames = 10, damageCurrent = 0;
 	
 	private BufferedImage[] rightPlayer, leftPlayer;
 	
@@ -83,10 +85,10 @@ public class Player extends Entity{
 		}
 		
 		if (this.hitted) {
-			long now = System.currentTimeMillis();
+			damageCurrent++;
 			
-			if (now - timeHitted >= 100) {
-				timeHitted = 0;
+			if (damageCurrent == damageFrames) {
+				damageCurrent = 0;
 				setHitted(false);
 			}
 		}
@@ -218,9 +220,9 @@ public class Player extends Entity{
 	
 	public void setHitted(boolean hit) {
 		this.hitted = hit;
+
 		if (this.hitted) {
 			this.life--;
-			timeHitted = System.currentTimeMillis();
 		}
 		
 		if (this.life <= 0) {
