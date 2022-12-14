@@ -67,6 +67,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private boolean printRestart = true;
 	
 	public Game() {
+		Sound.background.loop();
 		addKeyListener(this);
 		addMouseListener(this);
 		initFrame();

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import com.mangogames.main.Game;
+import com.mangogames.main.Sound;
 import com.mangogames.world.Camera;
 import com.mangogames.world.World;
 
@@ -85,6 +86,7 @@ public class Player extends Entity{
 		}
 		
 		if (this.hitted) {
+			Sound.hurtEffect.play();
 			damageCurrent++;
 			
 			if (damageCurrent == damageFrames) {
