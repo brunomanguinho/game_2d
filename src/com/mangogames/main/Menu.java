@@ -6,7 +6,7 @@ import java.awt.Graphics;
 
 public class Menu {
 	
-	public String[] options = {"New Game", "Load Game", "Exit"};
+	public String[] options = {"New Game", "Resume Game", "Exit"};
 	
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;

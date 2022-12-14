@@ -31,7 +31,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	enum GameState{
 		MENU,
 		RUNNING,
-		PAUSED,
 		GAME_OVER
 	}
 
@@ -142,9 +141,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				menu.tick();
 			break;
 			
-		case PAUSED:
-			
-			break;
 		default:
 			break;
 		}
@@ -298,6 +294,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			if (e.getKeyCode() == KeyEvent.VK_Z) {
 				player.shooting = true;
 			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				state = GameState.MENU;
+			}
 			break;
 		case GAME_OVER:
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -311,6 +311,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				menu.upSelect = true;
 			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
 				menu.downSelect = true;
+			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (menu.currentOption == 0) {
+					state = GameState.RUNNING;
+					level = 1;
+					loadGraphicElements();
+				} else if (menu.currentOption == 1) {
+					state = GameState.RUNNING;
+				} else if (menu.currentOption == 2) {
+					System.exit(1);
+				}
 			}
 			break;
 
