@@ -28,6 +28,13 @@ import com.mangogames.world.World;
 public class Game extends Canvas implements Runnable, KeyListener, MouseListener{
 	private static final long serialVersionUID = 1L;
 	
+	enum GameState{
+		MENU,
+		RUNNING,
+		PAUSED,
+		GAME_OVER
+	}
+
 	//Frame properties
 	public static JFrame frame;
 	public static final int WIDTH = 320;
@@ -39,17 +46,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private final String gameName = "Zelda Clone";
 	private Thread thread;
 	private boolean isRunning = false;
-	
-	enum GameState{
-		RUNNING,
-		PAUSED,
-		GAME_OVER
-	}
-	
-	public static GameState state = GameState.RUNNING;
+	public static GameState state = GameState.MENU;
 	
 	//Game elements
 	public static World world;
+	public Menu menu;
 	
 	public static ArrayList<Entity> entities;
 	public static ArrayList<Villain> villains;
@@ -71,8 +72,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		addMouseListener(this);
 		initFrame();
 		loadGraphicElements();
-		
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB); // set the background image
+		menu = new Menu();
 	}
 	
 	public static void loadGraphicElements() {
@@ -114,7 +115,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	//method to update the game logic
 	public void tick() {
-		if (state == GameState.RUNNING) {
+		switch (state) {
+		case RUNNING:
 			for (int i = 0; i < entities.size(); i++) {
 				Entity e = entities.get(i);
 				e.tick();
@@ -127,13 +129,24 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			if (villains.size() == 0) {
 				setNextLevel();
 			}
-		} else if (state == GameState.GAME_OVER) {
+			break;
+		case GAME_OVER:
 			framesRestart++;
 			
 			if (framesRestart == maxFramesRestart) {
 				printRestart = !printRestart;
 				framesRestart = 0;
 			}
+			break;
+		case MENU:
+				menu.tick();
+			break;
+			
+		case PAUSED:
+			
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -192,6 +205,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			
 			if (printRestart)
 				g.drawString(">Press any key to restart<", (WIDTH * SCALE)/2 -160, (HEIGHT * SCALE)/2 + 40);
+		} else if (state == GameState.MENU) {
+			menu.render(g);
 		}
 		
 		bs.show();
@@ -254,54 +269,85 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if ( (e.getKeyCode() == KeyEvent.VK_RIGHT) || (e.getKeyCode() == KeyEvent.VK_D)) {
-			player.right = true; 
-			player.left = false;
-			player.up = false;
-			player.down = false;
-		} else if ( (e.getKeyCode() == KeyEvent.VK_LEFT) || (e.getKeyCode() == KeyEvent.VK_A)) {
-			player.right = false; 
-			player.left = true;
-			player.up = false;
-			player.down = false;
-		}  
-		
-		if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
-			player.right = false; 
-			player.left = false;
-			player.up = true;
-			player.down = false;
-		} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
-			player.right = false; 
-			player.left = false;
-			player.up = false;
-			player.down = true;
+		switch (state) {
+		case RUNNING:
+			if ( (e.getKeyCode() == KeyEvent.VK_RIGHT) || (e.getKeyCode() == KeyEvent.VK_D)) {
+				player.right = true; 
+				player.left = false;
+				player.up = false;
+				player.down = false;
+			} else if ( (e.getKeyCode() == KeyEvent.VK_LEFT) || (e.getKeyCode() == KeyEvent.VK_A)) {
+				player.right = false; 
+				player.left = true;
+				player.up = false;
+				player.down = false;
+			}  
+			
+			if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
+				player.right = false; 
+				player.left = false;
+				player.up = true;
+				player.down = false;
+			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
+				player.right = false; 
+				player.left = false;
+				player.up = false;
+				player.down = true;
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_Z) {
+				player.shooting = true;
+			}
+			break;
+		case GAME_OVER:
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				level = 1;
+				loadGraphicElements();
+				state = GameState.RUNNING;
+			}	
+			break;
+		case MENU:
+			if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
+				menu.upSelect = true;
+			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
+				menu.downSelect = true;
+			}
+			break;
+
+		default:
+			break;
 		}
 		
-		if (e.getKeyCode() == KeyEvent.VK_Z) {
-			player.shooting = true;
-		}
-		
-		if ( (e.getKeyCode() == KeyEvent.VK_ENTER) && (state == GameState.GAME_OVER) ) {
-			level = 1;
-			loadGraphicElements();
-			state = GameState.RUNNING;
-		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if ( (e.getKeyCode() == KeyEvent.VK_RIGHT) || (e.getKeyCode() == KeyEvent.VK_D)) {
-			player.right = false; 
-		} else if ( (e.getKeyCode() == KeyEvent.VK_LEFT) || (e.getKeyCode() == KeyEvent.VK_A)) {
-			player.left = false;
-		}  
-		
-		if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
-			player.up = false;
-		} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
-			player.down = false;
+		switch (state) {
+		case RUNNING:
+			if ( (e.getKeyCode() == KeyEvent.VK_RIGHT) || (e.getKeyCode() == KeyEvent.VK_D)) {
+				player.right = false; 
+			} else if ( (e.getKeyCode() == KeyEvent.VK_LEFT) || (e.getKeyCode() == KeyEvent.VK_A)) {
+				player.left = false;
+			}  
+			
+			if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
+				player.up = false;
+			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
+				player.down = false;
+			}
+			break;
+		case MENU:
+			if ( (e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_W)) {
+				menu.upSelect = false;
+			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
+				menu.downSelect = false;
+			}
+			break;			
+		default:
+			break;
 		}
+		
+		
 		
 	}
 
