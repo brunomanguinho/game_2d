@@ -19,6 +19,7 @@ public class Entity {
 	public static BufferedImage LEFT_WEAPON = Game.spritesheet.getSprite(80, 48, 16, 16);
 	
 	protected double x, y;
+	protected int z = 0;
 	protected int width, height;
 	private BufferedImage sprite;
 	

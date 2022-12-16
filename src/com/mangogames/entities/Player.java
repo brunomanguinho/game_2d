@@ -18,7 +18,6 @@ public class Player extends Entity{
 	public int ammo = 0;
 	public boolean hitted = false;
 	public int mouseX, mouseY;
-	public int z;
 	
 	public boolean jump = false;
 	public boolean armed = false;
@@ -143,23 +142,23 @@ public class Player extends Entity{
 	}
 	
 	public boolean canMove() {
-		if (right && World.isFree((int) (x + speed), (int) this.getY())) {
+		if (right && World.isFree((int) (x + speed), (int) this.getY(), z)) {
 			curDirection = rightDirection;
 			this.x += speed;
 			moved = true;
 			return true;
-		} else if (left && World.isFree((int) (x - speed), (int) this.getY())) {
+		} else if (left && World.isFree((int) (x - speed), (int) this.getY(), z)) {
 			curDirection = leftDirection;
 			this.x -= speed;
 			moved = true;
 			return true;
 		}
 		
-		if (up && World.isFree((int) this.getX(), (int) (y - speed))) {
+		if (up && World.isFree((int) this.getX(), (int) (y - speed), z)) {
 			this.y -= speed;
 			moved = true;
 			return true;
-		} else if (down && World.isFree((int) this.getX(), (int) (y + speed))) {
+		} else if (down && World.isFree((int) this.getX(), (int) (y + speed), z)) {
 			this.y += speed;
 			moved = true;
 			return true;
