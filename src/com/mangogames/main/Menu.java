@@ -3,6 +3,9 @@ package com.mangogames.main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Menu {
 	
@@ -40,6 +43,7 @@ public class Menu {
 	}
 	
 	public void render(Graphics g) {
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, Game.WIDTH * Game.SCALE, Game.HEIGHT * Game.SCALE);
 		
@@ -67,4 +71,41 @@ public class Menu {
 		
 	}
 
+	public static void saveGame(String[] params, int[] values, int encode) {
+		//creates a new file for write the game values
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("save.txt"));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		// runs the params array
+		for (int i = 0; i < params.length; i++) {
+			String current = params[i];
+			current += ":";
+			
+			//fetch the value of the param into an char array
+			char[] value = Integer.toString(values[i]).toCharArray();
+			
+			// adds a key to encrypt the value 
+			for (int j = 0; j < value.length; j++) {
+				value[j] += encode;
+				current += value[j];
+			}
+			
+			//write on the file the params:value(encoded)
+			try {
+				writer.write(current);
+				if (i < params.length - 1)
+					writer.newLine();
+			} catch(IOException e) {}
+		}
+		
+		//ends and free the file
+		try {
+			writer.flush();
+			writer.close();
+		}catch (IOException e) {}
+	}
 }
