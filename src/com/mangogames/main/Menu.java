@@ -3,13 +3,19 @@ package com.mangogames.main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.mangogames.main.Game.GameState;
+
 public class Menu {
 	
-	public String[] options = {"New Game", "Resume Game", "Exit"};
+	public String[] options = {"New Game", "Resume Game", "Save Game", "Load Game", "Exit"};
 	
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
@@ -107,5 +113,57 @@ public class Menu {
 			writer.flush();
 			writer.close();
 		}catch (IOException e) {}
+	}
+	
+	public static String loadGame(int encode) {
+		String line = "";
+		File file = new File("save.txt");
+		
+		if (file.exists()) {
+			try {
+				String singleLine = null;
+				BufferedReader reader = new BufferedReader(new FileReader("save.txt"));
+				
+				try {
+					singleLine = reader.readLine();
+					
+					while (singleLine != null) {
+						String[] params = singleLine.split(":");
+						char[] value = params[1].toCharArray();
+						params[1] = "";
+						
+						for (int i = 0; i < value.length; i++) {
+							value[i] -= encode;
+							params[1] += value[i];
+						}
+						
+						line += params[0] + ":" + params[1] + "/";
+						
+						singleLine = reader.readLine();
+					}
+				}catch(IOException e) {}
+				
+			}catch(FileNotFoundException e) {}
+		}
+		
+		return line;
+	}
+	
+	public static void applySave(String str) {
+		String[] splitLine = str.split("/");
+		for (int i = 0; i < splitLine.length; i++) {
+			String[] splitParams = splitLine[i].split(":");
+			
+			switch (splitParams[0]) {
+			case "level":
+				Game.setLevel(Integer.parseInt(splitParams[1]));
+				Game.loadGraphicElements();
+				Game.state = GameState.RUNNING;
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 }

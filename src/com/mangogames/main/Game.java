@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -35,6 +36,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 
 	//Frame properties
+	public static final int encode = 1984;
 	public static JFrame frame;
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
@@ -155,6 +157,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 		
 		loadGraphicElements();
+	}
+	
+	public static void setLevel(int l) {
+		level = l;
+		System.out.println(level);
 	}
 	
 	public static String getMapLevel() {
@@ -285,7 +292,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				player.left = false;
 				player.up = true;
 				player.down = false;
-			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S)) {
+			} else if ( (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_S) ) {
 				player.right = false; 
 				player.left = false;
 				player.up = false;
@@ -318,12 +325,31 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				menu.downSelect = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				if (menu.currentOption == 0) {
+					File file = new File("save.txt");
+					if (file.exists()) {
+						System.out.println("file exists");
+						file.delete();
+					}
+					
 					state = GameState.RUNNING;
 					level = 1;
 					loadGraphicElements();
 				} else if (menu.currentOption == 1) {
 					state = GameState.RUNNING;
 				} else if (menu.currentOption == 2) {
+					String[] params = {"level"};
+					int[] values = {level};
+					
+					Menu.saveGame(params, values, encode);
+					System.out.println("Game saved");
+				} else if (menu.currentOption == 3) {
+					String loadParams = Menu.loadGame(encode);
+					if (loadParams != "") {
+						Menu.applySave(loadParams);
+					}
+				}
+				
+				else if (menu.currentOption == 4) {
 					System.exit(1);
 				}
 			}
