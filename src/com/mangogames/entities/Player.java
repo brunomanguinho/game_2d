@@ -239,11 +239,9 @@ public class Player extends Entity{
 			
 			if (en instanceof Weapon) {
 				if (Entity.isColliding(this, en)) {
-					if (life < maxLife) {
-						Game.entities.remove(i);
-						armed = true;
-						ammo += 30;
-					}
+					Game.entities.remove(i);
+					armed = true;
+					ammo += 30;
 				}
 			}
 		}

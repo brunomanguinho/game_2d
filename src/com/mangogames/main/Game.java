@@ -44,7 +44,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private BufferedImage image; //background image
 	
 	//Game properties
-	private final String gameName = "Zelda Clone";
+	public static final String gameName = "Shoot Game";
 	private Thread thread;
 	private boolean isRunning = false;
 	public static GameState state = GameState.MENU;
@@ -327,7 +327,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				if (menu.currentOption == 0) {
 					File file = new File("save.txt");
 					if (file.exists()) {
-						System.out.println("file exists");
 						file.delete();
 					}
 					
@@ -339,9 +338,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				} else if (menu.currentOption == 2) {
 					String[] params = {"level"};
 					int[] values = {level};
-					
 					Menu.saveGame(params, values, encode);
-					System.out.println("Game saved");
 				} else if (menu.currentOption == 3) {
 					String loadParams = Menu.loadGame(encode);
 					if (loadParams != "") {

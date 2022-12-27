@@ -55,7 +55,7 @@ public class Menu {
 		
 		g.setColor(Color.RED);
 		g.setFont(new Font("arial", Font.BOLD, 42));
-		g.drawString("Shoot Game", (Game.WIDTH * Game.SCALE) / 2 - 100, (Game.HEIGHT * Game.SCALE) / 2 - 80);
+		g.drawString(Game.gameName, (Game.WIDTH * Game.SCALE) / 2 - 100, (Game.HEIGHT * Game.SCALE) / 2 - 80);
 		
 		//Menu Options
 		g.setColor(Color.WHITE);

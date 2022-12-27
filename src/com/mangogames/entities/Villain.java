@@ -11,14 +11,13 @@ import com.mangogames.world.World;
 public class Villain extends Entity{
 
 	private double speed = 0.6;
+	private boolean hitted = false;
+	private int minDistance = 30;
 	
 	private BufferedImage[] villains = new BufferedImage[3];
 	
 	private int frames = 0, maxFrames = 10, index = 0;
-	
 	private int life = 5;
-	
-	private boolean hitted = false;
 	private int damageFrames = 10, damageCurrent = 0;
 	
 	public Villain(int x, int y, int width, int height, BufferedImage sprite) {
@@ -30,29 +29,31 @@ public class Villain extends Entity{
 	}
 	
 	public void tick() {
-		if (!hitPlayer()) {
-			if ( ( (int) x < Game.player.getX() ) && 
-				 ( World.isFree((int)(x + speed), this.getY(), z) ) &&
-				 ( !isColliding((int)(x + speed), this.getY()) ) 
-			   )
-				x+=speed;
-			else if ( ( (int) x > Game.player.getX() ) && 
-					  ( World.isFree((int)(x - speed), this.getY(), z) ) &&
-					  ( !isColliding((int)(x - speed), this.getY()) )
-					)
-				x-=speed;
-			
-			if ( ( (int) y < Game.player.getY() ) && 
-				 ( World.isFree(this.getX(), (int)(y + speed), z) ) &&
-				 ( !isColliding(this.getX(), (int)(y + speed)) )
-						 )
-				y+=speed;
-			else if ( ( (int) x > Game.player.getY() ) && 
-					  ( World.isFree(this.getX(), (int)(y - speed), z) ) &&
-					  ( !isColliding(this.getX(), (int)(y - speed)) ))
-				y-=speed;
-		} else if (!Game.player.getHitted()){
-			Game.player.setHitted(true);
+		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < this.minDistance) {
+			if (!hitPlayer()) {
+				if ( ( (int) x < Game.player.getX() ) && 
+					 ( World.isFree((int)(x + speed), this.getY(), z) ) &&
+					 ( !isColliding((int)(x + speed), this.getY()) ) 
+				   )
+					x+=speed;
+				else if ( ( (int) x > Game.player.getX() ) && 
+						  ( World.isFree((int)(x - speed), this.getY(), z) ) &&
+						  ( !isColliding((int)(x - speed), this.getY()) )
+						)
+					x-=speed;
+				
+				if ( ( (int) y < Game.player.getY() ) && 
+					 ( World.isFree(this.getX(), (int)(y + speed), z) ) &&
+					 ( !isColliding(this.getX(), (int)(y + speed)) )
+							 )
+					y+=speed;
+				else if ( ( (int) x > Game.player.getY() ) && 
+						  ( World.isFree(this.getX(), (int)(y - speed), z) ) &&
+						  ( !isColliding(this.getX(), (int)(y - speed)) ))
+					y-=speed;
+			} else if (!Game.player.getHitted()){
+				Game.player.setHitted(true);
+			}
 		}
 		
 		frames++;
