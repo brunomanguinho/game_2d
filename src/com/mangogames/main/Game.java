@@ -12,9 +12,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.mangogames.entities.Bullet;
@@ -38,10 +41,12 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	//Frame properties
 	public static final int encode = 1984;
 	public static JFrame frame;
-	public static final int WIDTH = 320;
-	public static final int HEIGHT = 240;
+	public static final int WIDTH = 240;
+	public static final int HEIGHT = 160;
 	public static final int SCALE = 3;
 	private BufferedImage image; //background image
+	public BufferedImage lightmap;
+	public int[] lightmapPixels;
 	
 	//Game properties
 	public static final String gameName = "Shoot Game";
@@ -59,22 +64,36 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static SpriteSheet spritesheet; 
 	public static Player player;
 	
+	//Game interface
 	public static UI ui;
+	private int[] pixels;
 	
+	//Game Options
 	private final int maxLevels = 2;
 	public static int level = 1;
 	
+	//Game Frames
 	private final int maxFramesRestart = 30;
 	private int framesRestart = 0;
 	private boolean printRestart = true;
 	
 	public Game() {
-		Sound.background.loop();
+		//Sound.background.loop();
 		addKeyListener(this);
 		addMouseListener(this);
 		initFrame();
 		loadGraphicElements();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB); // set the background image
+		try {
+			lightmap = ImageIO.read(getClass().getResource("/lightmap.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		lightmapPixels = new int[lightmap.getWidth() * lightmap.getHeight()];
+		lightmap.getRGB(0, 0, lightmap.getWidth(), lightmap.getHeight(), lightmapPixels, 0, lightmap.getWidth());
+		
+		pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		menu = new Menu();
 	}
 	
@@ -167,7 +186,32 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static String getMapLevel() {
 		return "/map" + level + ".png";
 	}
+	
+	public void drawRectangleExample(int xoff, int yoff) {
+		for(int x=0; x < 32; x++) {
+			for (int y=0; y<32; y++) {
+				int xOff = x + xoff;
+				int yOff = y + yoff;
+				
+				if (xOff < 0 || yOff < 0 || xOff >= WIDTH || yOff >= HEIGHT)
+					continue;
+				
+				pixels[xOff + (yOff*WIDTH)] = 0xff0000;
+			}
+		}
+	}
 
+	public void applyLight() {
+		for (int x = 0; x < 240; x++) {
+			for (int y = 0; y < 160; y++) {
+				int curPixel = x +(y * 240);
+				if (lightmapPixels[curPixel] == 0xffffffff) {
+					pixels[curPixel] = 0;
+				} else continue;
+			}
+		}
+	}
+	
 	// method to render the game
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
@@ -193,7 +237,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 		
 		ui.render(g);
-		
+		applyLight();
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
