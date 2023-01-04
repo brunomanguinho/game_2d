@@ -3,9 +3,12 @@ package com.mangogames.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.mangogames.main.Game;
 import com.mangogames.world.Camera;
+import com.mangogames.world.Node;
+import com.mangogames.world.Vector2i;
 import com.mangogames.world.World;
 
 public class Entity {
@@ -17,6 +20,8 @@ public class Entity {
 	public static BufferedImage VILLAIN_DAMAGE = Game.spritesheet.getSprite(144, 16, 16, 16);
 	public static BufferedImage RIGHT_WEAPON = Game.spritesheet.getSprite(80, 32, 16, 16);
 	public static BufferedImage LEFT_WEAPON = Game.spritesheet.getSprite(80, 48, 16, 16);
+	
+	protected List<Node> path;
 	
 	protected double x, y;
 	protected int z = 0;
@@ -91,5 +96,30 @@ public class Entity {
 	
 	public double calculateDistance(int x1, int y1, int x2, int y2) {
 		return Math.sqrt( (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	}
+	
+	public void followPath(List<Node> path) {
+		if (path!=null) {
+			if (path.size() > 0) {
+				Vector2i target = path.get(path.size() - 1).tile;
+				
+				if (x < target.x * 16) {
+					x++;
+				} else if (x > target.x * 16) {
+					x--;
+				}
+				
+				if (y < target.y * 16) {
+					y++;
+				} else if (y > target.y * 16) {
+					y--;
+				}
+				
+				if (x == target.x * 16 && y == target.y * 16) {
+					path.remove(path.size() - 1);
+				}
+				
+			}
+		}
 	}
 }

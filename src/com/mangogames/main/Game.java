@@ -237,7 +237,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 		
 		ui.render(g);
-		applyLight();
+		//applyLight();
 		
 		g.dispose();
 		g = bs.getDrawGraphics();

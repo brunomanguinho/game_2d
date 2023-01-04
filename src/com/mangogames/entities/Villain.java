@@ -5,7 +5,9 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.mangogames.main.Game;
+import com.mangogames.world.AStar;
 import com.mangogames.world.Camera;
+import com.mangogames.world.Vector2i;
 import com.mangogames.world.World;
 
 public class Villain extends Entity{
@@ -29,33 +31,40 @@ public class Villain extends Entity{
 	}
 	
 	public void tick() {
-		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < this.minDistance) {
-			if (!hitPlayer()) {
-				if ( ( (int) x < Game.player.getX() ) && 
-					 ( World.isFree((int)(x + speed), this.getY(), z) ) &&
-					 ( !isColliding((int)(x + speed), this.getY()) ) 
-				   )
-					x+=speed;
-				else if ( ( (int) x > Game.player.getX() ) && 
-						  ( World.isFree((int)(x - speed), this.getY(), z) ) &&
-						  ( !isColliding((int)(x - speed), this.getY()) )
-						)
-					x-=speed;
-				
-				if ( ( (int) y < Game.player.getY() ) && 
-					 ( World.isFree(this.getX(), (int)(y + speed), z) ) &&
-					 ( !isColliding(this.getX(), (int)(y + speed)) )
-							 )
-					y+=speed;
-				else if ( ( (int) x > Game.player.getY() ) && 
-						  ( World.isFree(this.getX(), (int)(y - speed), z) ) &&
-						  ( !isColliding(this.getX(), (int)(y - speed)) ))
-					y-=speed;
-			} else if (!Game.player.getHitted()){
-				Game.player.setHitted(true);
-			}
+//		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < this.minDistance) {
+//			if (!hitPlayer()) {
+//				if ( ( (int) x < Game.player.getX() ) && 
+//					 ( World.isFree((int)(x + speed), this.getY(), z) ) &&
+//					 ( !isColliding((int)(x + speed), this.getY()) ) 
+//				   )
+//					x+=speed;
+//				else if ( ( (int) x > Game.player.getX() ) && 
+//						  ( World.isFree((int)(x - speed), this.getY(), z) ) &&
+//						  ( !isColliding((int)(x - speed), this.getY()) )
+//						)
+//					x-=speed;
+//				
+//				if ( ( (int) y < Game.player.getY() ) && 
+//					 ( World.isFree(this.getX(), (int)(y + speed), z) ) &&
+//					 ( !isColliding(this.getX(), (int)(y + speed)) )
+//							 )
+//					y+=speed;
+//				else if ( ( (int) x > Game.player.getY() ) && 
+//						  ( World.isFree(this.getX(), (int)(y - speed), z) ) &&
+//						  ( !isColliding(this.getX(), (int)(y - speed)) ))
+//					y-=speed;
+//			} else if (!Game.player.getHitted()){
+//				Game.player.setHitted(true);
+//			}
+//		}
+		
+		if (path == null || path.size() == 0) {
+			Vector2i start = new Vector2i((int) (x/16), (int) (y/16));
+			Vector2i end = new Vector2i((int) (Game.player.x/16), (int) (Game.player.y/16));
+			path = AStar.findPath(Game.world, start, end);
 		}
 		
+		followPath(path);
 		frames++;
 		
 		if (frames == maxFrames) {
