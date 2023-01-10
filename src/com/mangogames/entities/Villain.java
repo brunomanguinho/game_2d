@@ -3,6 +3,7 @@ package com.mangogames.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import com.mangogames.main.Game;
 import com.mangogames.world.AStar;
@@ -28,6 +29,8 @@ public class Villain extends Entity{
 		villains[0] = Game.spritesheet.getSprite(96, 16, 16, 16);
 		villains[1] = Game.spritesheet.getSprite(112, 16, 16, 16);
 		villains[2] = Game.spritesheet.getSprite(128, 16, 16, 16);
+		
+		depth = 0;
 	}
 	
 	public void tick() {
@@ -58,13 +61,20 @@ public class Villain extends Entity{
 //			}
 //		}
 		
-		if (path == null || path.size() == 0) {
-			Vector2i start = new Vector2i((int) (x/16), (int) (y/16));
-			Vector2i end = new Vector2i((int) (Game.player.x/16), (int) (Game.player.y/16));
-			path = AStar.findPath(Game.world, start, end);
+		if (!isColliding(this, Game.player, true)) {
+			if (path == null || path.size() == 0) {
+				Vector2i start = new Vector2i((int) (x/16), (int) (y/16));
+				Vector2i end = new Vector2i((int) (Game.player.x/16), (int) (Game.player.y/16));
+				path = AStar.findPath(Game.world, start, end);
+			}
+		} else if (!Game.player.getHitted()){
+			Game.player.setHitted(true);
+		}
+
+		if (new Random().nextInt(100) < 50){
+			followPath(path);
 		}
 		
-		followPath(path);
 		frames++;
 		
 		if (frames == maxFrames) {
@@ -84,23 +94,6 @@ public class Villain extends Entity{
 			}
 		}
 		
-	}
-	
-	private boolean isColliding(int nextX, int nextY) {
-		Rectangle curVillain = new Rectangle(nextX, nextY, World.TILE_SIZE, World.TILE_SIZE);
-		
-		for (int i = 0; i < Game.villains.size(); i++) {
-			Villain v = Game.villains.get(i);
-			
-			if (v == this) continue;
-			
-			Rectangle otherVillain = new Rectangle(v.getX(), v.getY(), World.TILE_SIZE, World.TILE_SIZE);
-			
-			if (curVillain.intersects(otherVillain)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public boolean hitPlayer() {

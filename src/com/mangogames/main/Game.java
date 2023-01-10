@@ -16,6 +16,7 @@ import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -70,7 +71,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	//Game Options
 	private final int maxLevels = 2;
-	public static int level = 1;
+	public static int level;
 	
 	//Game Frames
 	private final int maxFramesRestart = 30;
@@ -79,6 +80,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	public Game() {
 		//Sound.background.loop();
+		level = 1;
 		addKeyListener(this);
 		addMouseListener(this);
 		initFrame();
@@ -226,6 +228,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 		
 		world.render(g);
+		
+		Collections.sort(entities, Entity.nodeSorter);
 		
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);

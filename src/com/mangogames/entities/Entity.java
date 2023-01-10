@@ -3,6 +3,7 @@ package com.mangogames.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Comparator;
 import java.util.List;
 
 import com.mangogames.main.Game;
@@ -13,6 +14,7 @@ import com.mangogames.world.World;
 
 public class Entity {
 	
+	private BufferedImage sprite;
 	public static BufferedImage LIFEPACK_EN = Game.spritesheet.getSprite(80, 0, 16, 16);
 	public static BufferedImage WEAPON_EN = Game.spritesheet.getSprite(80, 16, 16, 16);
 	public static BufferedImage AMMO_EN = Game.spritesheet.getSprite(96, 0, 16, 16);
@@ -26,7 +28,9 @@ public class Entity {
 	protected double x, y;
 	protected int z = 0;
 	protected int width, height;
-	private BufferedImage sprite;
+
+	public int depth;
+
 	
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -83,6 +87,23 @@ public class Entity {
 		return ent1.intersects(ent2);
 	}
 	
+	public boolean isColliding(int nextX, int nextY) {
+		Rectangle curVillain = new Rectangle(nextX, nextY, World.TILE_SIZE, World.TILE_SIZE);
+		
+		for (int i = 0; i < Game.villains.size(); i++) {
+			Villain v = Game.villains.get(i);
+			
+			if (v == this) continue;
+			
+			Rectangle otherVillain = new Rectangle(v.getX(), v.getY(), World.TILE_SIZE, World.TILE_SIZE);
+			
+			if (curVillain.intersects(otherVillain)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static boolean isColliding(Entity e1, Entity e2, boolean ownerProps) {
 		if (!ownerProps) {
 			return isColliding(e1, e2);
@@ -103,15 +124,15 @@ public class Entity {
 			if (path.size() > 0) {
 				Vector2i target = path.get(path.size() - 1).tile;
 				
-				if (x < target.x * 16) {
+				if ( (x < target.x * 16) /*&& (!isColliding(this.getX() + 1, this.getY())) */){
 					x++;
-				} else if (x > target.x * 16) {
+				} else if ( (x > target.x * 16) /*&& (!isColliding(this.getX() - 1, this.getY()))*/ ){
 					x--;
 				}
 				
-				if (y < target.y * 16) {
+				if ( (y < target.y * 16) /*&& (!isColliding(this.getX(), this.getY() + 1)) */ ) {
 					y++;
-				} else if (y > target.y * 16) {
+				} else if ( (y > target.y * 16) /*&& (!isColliding(this.getX(), this.getY() - 1)) */ ) {
 					y--;
 				}
 				
@@ -122,4 +143,16 @@ public class Entity {
 			}
 		}
 	}
+	
+	public static Comparator<Entity> nodeSorter = new Comparator<Entity>() {
+		@Override
+		public int compare(Entity n0, Entity n1) {
+			if(n1.depth < n0.depth)
+				return + 1;
+			if (n1.depth > n0.depth)
+				return - 1;
+			
+			return 0;
+		}
+	};
 }
