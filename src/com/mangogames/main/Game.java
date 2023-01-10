@@ -48,7 +48,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private BufferedImage image; //background image
 	public BufferedImage lightmap;
 	public int[] lightmapPixels;
-	
+
+	public static BufferedImage minimap;
+	public static int[] minimapPixels;
 	//Game properties
 	public static final String gameName = "Shoot Game";
 	private Thread thread;
@@ -107,7 +109,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		bullets = new ArrayList<Bullet>();
 		entities.add(player);
 		world = new World(getMapLevel());
+		createMiniMap();
+		
 		ui = new UI();
+	}
+	
+	public static void createMiniMap() {
+		minimap = new BufferedImage(world.WIDTH, world.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		minimapPixels = ((DataBufferInt)minimap.getRaster().getDataBuffer()).getData();
 	}
 	
 	public static void setGameOver() {
@@ -260,9 +269,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		} else if (state == GameState.MENU) {
 			menu.render(g);
 		}
-		
+		if (state == GameState.RUNNING) {
+			World.renderMiniMap();
+			g.drawImage(minimap, 617, 80, world.WIDTH * 5, world.HEIGHT * 5, null);	
+		}
+
 		bs.show();
 	}
+	
 	
 	
 	public void initFrame() {
